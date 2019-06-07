@@ -9,7 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("/")
+@Path("/laar")
 @Produces(MediaType.APPLICATION_JSON)
 public class LogController {
 
@@ -24,7 +24,7 @@ public class LogController {
     }
 
     @POST
-    @Path("laar/ingest")
+    @Path("/ingest")
     @Consumes(MediaType.TEXT_PLAIN)
     public void saveLogs(String logs) {
         logService.insertLogs(LogsBuilder.build(logs));
