@@ -1,15 +1,17 @@
 package com.company.controller;
 
 import com.codahale.metrics.annotation.Timed;
-import com.company.model.Metrics;
+import com.company.dto.DateQueryDto;
+import com.company.dto.LogDto;
+import com.company.dto.MetricsDto;
 import com.company.service.MetricsService;
-import com.mongodb.client.AggregateIterable;
-import org.bson.Document;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/laa")
 @Produces(MediaType.APPLICATION_JSON)
@@ -28,12 +30,28 @@ public class MetricsController {
     @GET
     @Path("/metrics")
     @Timed
-    public Metrics getMetrics() {
-        Metrics metrics = new Metrics();
+    public MetricsDto getMetrics() {
+        MetricsDto metricsDto = new MetricsDto();
 
-        metrics.setTop3WorldwideUrl(metricsService.findUrlsMostVisited(3));
-        metrics.setTop3RegionalUrl(metricsService.findUrlsMostVisitedPerRegion(3));
-        metrics.setLessAccessedUrl(metricsService.findUrlsLessVisited(1));
-        return metrics;
+        metricsDto.setTop3WorldwideUrl(metricsService.findUrlsMostVisited(3));
+        metricsDto.setTop3RegionalUrl(metricsService.findUrlsMostVisitedPerRegion(3));
+        metricsDto.setLessAccessedUrl(metricsService.findUrlsLessVisited(1));
+        return metricsDto;
+    }
+
+    @GET
+    @Path("/metrics/1")
+    @Timed
+    public List<LogDto> getMostAccessedUrls() {
+        return metricsService.findUrlsMostVisited(3);
+    }
+
+    @GET
+    @Path("/metrics/4")
+    @Timed
+    public List<DateQueryDto> getDateMetrics(
+            @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
+    ) {
+        return metricsService.findUrlsMostVisitedPerDates(day, weekYear, year,3);
     }
 }

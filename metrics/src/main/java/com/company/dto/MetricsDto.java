@@ -1,4 +1,4 @@
-package com.company.model;
+package com.company.dto;
 
 import com.company.dto.LogDto;
 import com.company.dto.RegionDto;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class Metrics {
+public class MetricsDto {
 
     List<LogDto> top3WorldwideUrl = new ArrayList<>();
     List<RegionDto> top3RegionalUrl = new ArrayList<>();

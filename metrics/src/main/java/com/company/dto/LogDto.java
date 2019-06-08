@@ -1,16 +1,19 @@
 package com.company.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LogDto {
 
-    private int region;
+    private Integer region;
     private String url;
-    private int count;
+    private Integer count;
 
-    public int getRegion() {
+    public Integer getRegion() {
         return region;
     }
 
-    public void setRegion(int region) {
+    public void setRegion(Integer region) {
         this.region = region;
     }
 
@@ -22,11 +25,11 @@ public class LogDto {
         this.url = url;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 }
