@@ -1,17 +1,19 @@
 package com.company.service;
 
-import com.company.dto.UrlsTop3PerRegion;
+import com.company.dto.LogDto;
+import com.company.dto.RegionDto;
 import com.mongodb.MongoClient;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class MetricsService {
 
@@ -23,45 +25,108 @@ public class MetricsService {
         this.db = mongoClient.getDatabase("logs");
     }
 
-    public AggregateIterable<Document> findUrlsMostAcessed(int limit) {
-        return db.getCollection("logs").aggregate(
+    public List<LogDto> findUrlsMostVisited(int limit) {
+        AggregateIterable<Document> queryResult = db.getCollection("logs").aggregate(
                 Arrays.asList(
-                        Aggregates.sortByCount("$endpoint"),
-                        Aggregates.limit(limit)
+                        Aggregates.sortByCount("$url")
                 )
         );
+
+        return getTop(logsToList(queryResult), limit);
     }
 
-    public AggregateIterable<Document> findUrlsMostAcessedPerRegion() {
-        return getLogsGroupedByRegion();
+    public List<LogDto> findUrlsLessVisited(int limit) {
+        AggregateIterable<Document> queryResult = db.getCollection("logs").aggregate(
+                Arrays.asList(
+                        Aggregates.sortByCount("$url"),
+                        Aggregates.sort(new Document("count", 1))
+                )
+        );
+
+        return getTop(logsToList(queryResult), limit);
     }
 
-    private AggregateIterable<Document> getLogsGroupedByRegion() {
-        return db.getCollection("logs").aggregate(
+    public List<RegionDto> findUrlsMostVisitedPerRegion(int limit) throws ArrayIndexOutOfBoundsException {
+        List<LogDto> allLogs = getLogsGroupedByRegionAndUrl();
+
+        List<LogDto> urlsRegion1 = groupByRegion(allLogs, 1);
+        List<LogDto> urlsRegion2 = groupByRegion(allLogs, 2);
+        List<LogDto> urlsRegion3 = groupByRegion(allLogs, 3);
+
+        RegionDto region1 = createDto(1, getTop(urlsRegion1, limit));
+        RegionDto region2 = createDto(2, getTop(urlsRegion2, limit));
+        RegionDto region3 = createDto(3, getTop(urlsRegion3, limit));
+
+        return Arrays.asList(region1, region2, region3);
+    }
+
+    private List<LogDto> getLogsGroupedByRegionAndUrl() {
+        AggregateIterable queryResult = db.getCollection("logs").aggregate(
                 Arrays.asList(
                         new Document("$group",
-                                new Document("counter", new Document("$sum", 1))
+                                new Document("count", new Document("$sum", 1))
                                         .append("_id",
                                                 new Document("region", "$region")
-                                                .append("url", "$endpoint"))
+                                                        .append("url", "$url"))
                         )
                 )
         );
-    }
 
-    public List<UrlsTop3PerRegion> build(){
-        List<UrlsTop3PerRegion> region1 = new ArrayList<>();
-        List<UrlsTop3PerRegion> region2 = new ArrayList<>();
-        List<UrlsTop3PerRegion> region3 = new ArrayList<>();
+        List<LogDto> logs = new ArrayList<>();
 
-        getLogsGroupedByRegion().forEach((Consumer<? super Document>) document -> {
-            var log = new UrlsTop3PerRegion();
+        queryResult.forEach((Consumer<? super Document>) document -> {
+            LogDto log = new LogDto();
+            log.setRegion(document.get("_id", Document.class).getInteger("region"));
             log.setUrl(document.get("_id", Document.class).getString("url"));
-            log.setCounter(document.getInteger("counter"));
+            log.setCount(document.getInteger("count"));
+
+            logs.add(log);
         });
 
-        return null;
+        return logs;
     }
+
+    private List<LogDto> groupByRegion(List<LogDto> logs, int region) {
+        return logs.stream()
+                .filter(l -> l.getRegion() == region)
+                .sorted(Comparator.comparingInt(LogDto::getCount).reversed())
+                .collect(Collectors.toList());
+    }
+
+    private List<LogDto> getTop(List<LogDto> list, int limit) {
+        int target = list.get(0).getCount();
+        int occurrences = (int) list.stream().filter(l -> l.getCount() == target).count();
+
+        if (occurrences > limit) {
+            return list.subList(0, occurrences);
+        }
+        if (list.size() > limit) {
+            return list.subList(0, limit);
+        }
+        return list;
+    }
+
+    private RegionDto createDto(int region, List<LogDto> url) {
+        RegionDto regionDto = new RegionDto();
+        regionDto.setRegion(region);
+        regionDto.setTop3url(url);
+
+        return regionDto;
+    }
+
+    private List<LogDto> logsToList(AggregateIterable<Document> iterable) {
+        List<LogDto> logs = new ArrayList<>();
+        iterable.forEach((Consumer<? super Document>) document -> {
+            LogDto logDto = new LogDto();
+            logDto.setUrl(document.getString("_id"));
+            logDto.setCount(document.getInteger("count"));
+            logs.add(logDto);
+        });
+
+        return logs;
+    }
+
+
 }
 
 

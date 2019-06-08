@@ -22,9 +22,9 @@ public class LogsBuilder {
 
             documents.add(
                 new Document("uuid", dataLog.get(2))
-                    .append("endpoint", dataLog.get(0))
+                    .append("url", dataLog.get(0))
                     .append("timestamp", new Date(Long.valueOf(dataLog.get(1))))
-                    .append("region", dataLog.get(3))
+                    .append("region", Integer.valueOf(dataLog.get(3)))
             );
         });
 

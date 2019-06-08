@@ -31,8 +31,9 @@ public class MetricsController {
     public Metrics getMetrics() {
         Metrics metrics = new Metrics();
 
-        metrics.setTop3RegionalUrl(metricsService.findUrlsMostAcessedPerRegion());
-        metrics.setTop3WorldwideUrl(metricsService.findUrlsMostAcessed(3));
+        metrics.setTop3WorldwideUrl(metricsService.findUrlsMostVisited(3));
+        metrics.setTop3RegionalUrl(metricsService.findUrlsMostVisitedPerRegion(3));
+        metrics.setLessAccessedUrl(metricsService.findUrlsLessVisited(1));
         return metrics;
     }
 }
