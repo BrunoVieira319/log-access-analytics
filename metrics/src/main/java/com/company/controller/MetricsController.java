@@ -4,7 +4,9 @@ import com.codahale.metrics.annotation.Timed;
 import com.company.dto.DateQueryDto;
 import com.company.dto.LogDto;
 import com.company.dto.MetricsDto;
+import com.company.dto.RegionDto;
 import com.company.service.MetricsService;
+import org.bson.Document;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,12 +32,17 @@ public class MetricsController {
     @GET
     @Path("/metrics")
     @Timed
-    public MetricsDto getMetrics() {
+    public MetricsDto getMetrics(
+            @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
+    ) {
         MetricsDto metricsDto = new MetricsDto();
 
-        metricsDto.setTop3WorldwideUrl(metricsService.findUrlsMostVisited(3));
-        metricsDto.setTop3RegionalUrl(metricsService.findUrlsMostVisitedPerRegion(3));
-        metricsDto.setLessAccessedUrl(metricsService.findUrlsLessVisited(1));
+        metricsDto.setTop3WorldwideUrl(metricsService.findMostAccessedUrls(3));
+        metricsDto.setTop3RegionalUrl(metricsService.findMostAccessedUrlsPerRegion(3));
+        metricsDto.setLessAccessedUrl(metricsService.findLessAccessedUrls(1));
+        metricsDto.setMostAccessedUrlPerDate(metricsService.findMostAccessedUrlsPerDates(day, weekYear, year,3));
+        metricsDto.setMostAccessedTime(metricsService.findMostAccessedMinute());
+
         return metricsDto;
     }
 
@@ -43,7 +50,21 @@ public class MetricsController {
     @Path("/metrics/1")
     @Timed
     public List<LogDto> getMostAccessedUrls() {
-        return metricsService.findUrlsMostVisited(3);
+        return metricsService.findMostAccessedUrls(3);
+    }
+
+    @GET
+    @Path("/metrics/2")
+    @Timed
+    public List<RegionDto> getMostAccessedUrlsPerRegion() {
+        return metricsService.findMostAccessedUrlsPerRegion(3);
+    }
+
+    @GET
+    @Path("/metrics/3")
+    @Timed
+    public List<LogDto> getLessAccessedUrls() {
+        return metricsService.findLessAccessedUrls(1);
     }
 
     @GET
@@ -52,6 +73,13 @@ public class MetricsController {
     public List<DateQueryDto> getDateMetrics(
             @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
     ) {
-        return metricsService.findUrlsMostVisitedPerDates(day, weekYear, year,3);
+        return metricsService.findMostAccessedUrlsPerDates(day, weekYear, year,3);
+    }
+
+    @GET
+    @Path("/metrics/5")
+    @Timed
+    public Document getMostAccessedMinute() {
+        return metricsService.findMostAccessedMinute();
     }
 }

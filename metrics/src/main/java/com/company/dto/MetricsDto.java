@@ -12,23 +12,30 @@ import java.util.function.Consumer;
 
 public class MetricsDto {
 
-    List<LogDto> top3WorldwideUrl = new ArrayList<>();
-    List<RegionDto> top3RegionalUrl = new ArrayList<>();
-    List<LogDto> lessAccessedUrl = new ArrayList<>();
+    private List<LogDto> top3WorldwideUrl;
+    private List<RegionDto> top3RegionalUrl;
+    private List<LogDto> lessAccessedUrl;
+    private List<DateQueryDto> mostAccessedUrlPerDate;
+    private Document mostAccessedTime;
 
-    @JsonProperty
     public List<LogDto> getTop3WorldwideUrl() {
         return top3WorldwideUrl;
     }
 
-    @JsonProperty
     public List<RegionDto> getTop3RegionalUrl() {
         return top3RegionalUrl;
     }
 
-    @JsonProperty
     public List<LogDto> getLessAccessedUrl() {
         return lessAccessedUrl;
+    }
+
+    public List<DateQueryDto> getMostAccessedUrlPerDate() {
+        return mostAccessedUrlPerDate;
+    }
+
+    public Document getMostAccessedTime() {
+        return mostAccessedTime;
     }
 
     public void setTop3WorldwideUrl(List<LogDto> top3WorldwideUrl) {
@@ -38,9 +45,16 @@ public class MetricsDto {
     public void setTop3RegionalUrl(List<RegionDto> top3RegionalUrl) {
         this.top3RegionalUrl = top3RegionalUrl;
     }
+
     public void setLessAccessedUrl(List<LogDto> lessAccessedUrl) {
         this.lessAccessedUrl = lessAccessedUrl;
     }
 
+    public void setMostAccessedUrlPerDate(List<DateQueryDto> mostAccessedUrlPerDate) {
+        this.mostAccessedUrlPerDate = mostAccessedUrlPerDate;
+    }
 
+    public void setMostAccessedTime(Document mostAccessedTime) {
+        this.mostAccessedTime = mostAccessedTime;
+    }
 }
