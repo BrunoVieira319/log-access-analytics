@@ -5,25 +5,13 @@ import io.dropwizard.Configuration;
 
 public class HealthCheckConfiguration extends Configuration {
 
-    private String template;
+    @JsonProperty
     private String defaultName = "LogAccessHealthCheck";
 
-    @JsonProperty
-    public String getTemplate() {
-        return template;
-    }
-
-    @JsonProperty
-    public void setTemplate(String template) {
-        this.template = template;
-    }
-
-    @JsonProperty
     public String getDefaultName() {
         return defaultName;
     }
 
-    @JsonProperty
     public void setDefaultName(String defaultName) {
         this.defaultName = defaultName;
     }

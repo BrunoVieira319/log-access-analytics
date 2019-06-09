@@ -1,38 +1,31 @@
 package com.company.controller;
 
-import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.company.service.HealthCheckService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Optional;
-import java.util.stream.Stream;
+
 
 @Path("/laaa")
+@Produces(MediaType.APPLICATION_JSON)
 public class HealthCheckController {
 
-    private final String defaultName;
-    private final String template;
     private HealthCheckRegistry registry;
+    private HealthCheckService service;
 
-    public HealthCheckController(String defaultName, String template, HealthCheckRegistry registry) {
-        this.defaultName = defaultName;
-        this.template = template;
+    public HealthCheckController(HealthCheckRegistry registry) {
         this.registry = registry;
+        this.service = new HealthCheckService();
     }
 
     @GET
     @Path("/health")
     public Response getStatus() {
-        Stream<HealthCheck.Result> result = registry.runHealthChecks().values().stream();
-        Optional<HealthCheck.Result> unhealthy = result.filter(r -> !r.isHealthy()).findFirst();
-
-        if (unhealthy.isPresent()) {
-            return Response.status(500).build();
-        };
-
-        return Response.status(200).build();
+        return service.runHealthChecks(registry);
     }
 
 }
