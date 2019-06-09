@@ -8,6 +8,7 @@ import com.company.dto.RegionDto;
 import com.company.service.MetricsService;
 import org.bson.Document;
 
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,13 +20,9 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class MetricsController {
 
-    private final String template;
-    private final String defaultName;
     private final MetricsService metricsService;
 
-    public MetricsController(String template, String defaultName) {
-        this.template = template;
-        this.defaultName = defaultName;
+    public MetricsController() {
         this.metricsService = new MetricsService();
     }
 
@@ -33,7 +30,9 @@ public class MetricsController {
     @Path("/metrics")
     @Timed
     public MetricsDto getMetrics(
-            @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
+            @NotNull @QueryParam("day") String day,
+            @NotNull @QueryParam("week") String weekYear,
+            @NotNull @QueryParam("year") String year
     ) {
         MetricsDto metricsDto = new MetricsDto();
 

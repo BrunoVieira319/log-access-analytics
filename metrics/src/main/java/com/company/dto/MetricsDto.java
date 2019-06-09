@@ -1,14 +1,7 @@
 package com.company.dto;
 
-import com.company.dto.LogDto;
-import com.company.dto.RegionDto;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mongodb.client.AggregateIterable;
 import org.bson.Document;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class MetricsDto {
 

@@ -1,4 +1,4 @@
-defaultName: LogAccessAnalytics
+defaultName: LogAccessAnalyticsIngest
 server:
   applicationConnectors:
     - type: http

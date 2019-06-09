@@ -1,4 +1,4 @@
 rootProject.name = 'log-access-analytics'
 include 'health-check'
 include 'metrics'
-include 'log-analytics'
+include 'log-ingest'

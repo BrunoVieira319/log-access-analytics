@@ -1,4 +1,4 @@
-defaultName: LogAccessHealthCheck
+defaultName: LogAccessAnalyticsHealthCheck
 server:
   applicationConnectors:
     - type: http

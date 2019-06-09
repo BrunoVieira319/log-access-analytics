@@ -7,12 +7,12 @@ import org.bson.Document;
 
 import java.util.List;
 
-public class LogService {
+public class LogIngestService {
 
     MongoClient mongoClient;
     MongoDatabase db;
 
-    public LogService() {
+    public LogIngestService() {
         this.mongoClient = new MongoClient("localhost", 27017);
         this.db = mongoClient.getDatabase("logs");
     }

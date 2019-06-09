@@ -5,10 +5,6 @@ import com.company.dto.DateQueryDto;
 import com.company.dto.LogDto;
 import com.company.dto.RegionDto;
 import com.company.util.DtoCreator;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
 import org.bson.Document;
 
 import java.time.LocalDate;
@@ -54,7 +50,6 @@ public class MetricsService {
 
             regions.add(regionDto);
         });
-
         return regions;
     }
 
@@ -147,15 +142,20 @@ public class MetricsService {
     }
 
     private List<LogDto> documentsToDto(Iterable<Document> iterable) {
-        List<LogDto> logs = new ArrayList<>();
-        iterable.forEach(document -> {
-            LogDto logDto = DtoCreator.logDto(
-                    document.getInteger("region"),
-                    document.getString("url"),
-                    document.getInteger("count"));
-            logs.add(logDto);
-        });
+        try {
+            List<LogDto> logs = new ArrayList<>();
+            iterable.forEach(document -> {
+                LogDto logDto = DtoCreator.logDto(
+                        document.getInteger("region"),
+                        document.getString("url"),
+                        document.getInteger("count"));
+                logs.add(logDto);
+            });
 
-        return logs;
+            return logs;
+        } catch (Exception e) {
+            System.out.println("Não foi possível gerar LogsDto");
+            return null;
+        }
     }
 }
