@@ -22,7 +22,7 @@ public class HealthCheckApp extends Application<HealthCheckConfiguration> {
         HealthCheckRegistry registry = new HealthCheckRegistry();
         registry.register("Metrics", new ExternalServiceHealthCheck("http://localhost:8081/healthcheck"));
         registry.register("LogIngest", new ExternalServiceHealthCheck("http://localhost:8083/healthcheck"));
-        registry.register("Database", new DatabaseHealthCheck());
+        registry.register("MongoDb", new DatabaseHealthCheck());
 
         HealthCheckController controller = new HealthCheckController(registry);
 

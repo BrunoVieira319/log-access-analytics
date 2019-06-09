@@ -4,6 +4,7 @@ import com.codahale.metrics.health.HealthCheck;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
+import org.bson.Document;
 
 public class DatabaseHealthCheck extends HealthCheck {
 
@@ -11,10 +12,12 @@ public class DatabaseHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        MongoClientOptions options = MongoClientOptions.builder().serverSelectionTimeout(2000).build();
+        MongoClientOptions options = MongoClientOptions.builder()
+                .serverSelectionTimeout(2000)
+                .build();
         mongo = new MongoClient(new ServerAddress("localhost", 27017), options);
         try {
-            mongo.getDatabase("logs").getCollection("logs").countDocuments();
+            mongo.getDatabase("logs").runCommand(new Document("ping", 1));
         } catch (Exception e) {
             return Result.unhealthy("Failed to connect to localhost/127.0.0.1:27017");
         }
