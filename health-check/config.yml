@@ -1,8 +1,8 @@
-defaultName: LogAccessAnalyticsMetrics
+defaultName: LogAccessHealthCheck
 server:
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 8084
   adminConnectors:
     - type: http
-      port: 8081
+      port: 8085

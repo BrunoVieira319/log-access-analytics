@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.controller.MetricsController;
+import com.company.healthcheck.MetricsHealthCheck;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -22,5 +23,6 @@ public class LogAnalyticsMetricsApp extends Application<LogAnalyticsMetricsConfi
         );
 
         environment.jersey().register(metricsController);
+        environment.healthChecks().register("metrics", new MetricsHealthCheck());
     }
 }
