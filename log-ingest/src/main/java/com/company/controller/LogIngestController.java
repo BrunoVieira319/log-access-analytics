@@ -13,8 +13,8 @@ public class LogIngestController {
 
     private final LogIngestService logIngestService;
 
-    public LogIngestController() {
-        this.logIngestService = new LogIngestService();
+    public LogIngestController(LogIngestService service) {
+        this.logIngestService = service;
     }
 
     @POST
