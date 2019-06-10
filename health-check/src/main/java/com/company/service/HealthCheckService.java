@@ -2,7 +2,6 @@ package com.company.service;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.health.HealthCheckRegistry;
-import org.jetbrains.annotations.NotNull;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -21,14 +20,12 @@ public class HealthCheckService {
         return Response.serverError().entity(unhealthyResults).build();
     }
 
-    @NotNull
     private List<String> extractUnhealthyResults(SortedMap<String, HealthCheck.Result> results) {
         List<String> unhealthyResults = new ArrayList<>();
 
         results.forEach((check, result) -> {
             if(!result.isHealthy()) {
                 String response = check + ": " + result.getMessage();
-                System.out.println(response);
                 unhealthyResults.add(response);
             }
         });

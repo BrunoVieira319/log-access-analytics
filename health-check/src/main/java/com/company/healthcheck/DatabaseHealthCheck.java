@@ -2,26 +2,24 @@ package com.company.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.ServerAddress;
 import org.bson.Document;
 
 public class DatabaseHealthCheck extends HealthCheck {
 
-    private MongoClient mongo;
+    private MongoClient mongoClient;
+
+    public DatabaseHealthCheck(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
+    }
 
     @Override
-    protected Result check() throws Exception {
-        MongoClientOptions options = MongoClientOptions.builder()
-                .serverSelectionTimeout(2000)
-                .build();
-        mongo = new MongoClient(new ServerAddress("localhost", 27017), options);
+    public Result check() throws Exception {
         try {
-            mongo.getDatabase("logs").runCommand(new Document("ping", 1));
+            mongoClient.getDatabase("logs").runCommand(new Document("ping", 1));
         } catch (Exception e) {
             return Result.unhealthy("Failed to connect to localhost/127.0.0.1:27017");
         }
-        mongo.close();
+        mongoClient.close();
         return Result.healthy();
     }
 }

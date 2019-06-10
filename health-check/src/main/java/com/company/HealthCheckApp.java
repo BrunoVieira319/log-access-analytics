@@ -18,11 +18,11 @@ public class HealthCheckApp extends Application<HealthCheckConfiguration> {
     }
 
     @Override
-    public void run(HealthCheckConfiguration configuration, Environment environment) throws Exception {
+    public void run(HealthCheckConfiguration config, Environment environment) throws Exception {
         HealthCheckRegistry registry = new HealthCheckRegistry();
-        registry.register("Metrics", new ExternalServiceHealthCheck("http://localhost:8081/healthcheck"));
-        registry.register("LogIngest", new ExternalServiceHealthCheck("http://localhost:8083/healthcheck"));
-        registry.register("MongoDb", new DatabaseHealthCheck());
+        registry.register("Metrics", new ExternalServiceHealthCheck("http://localhost:8081/healthcheck", config.getHttpClient()));
+        registry.register("LogIngest", new ExternalServiceHealthCheck("http://localhost:8083/healthcheck", config.getHttpClient()));
+        registry.register("MongoDb", new DatabaseHealthCheck(config.getMongoClient()));
 
         HealthCheckController controller = new HealthCheckController(registry);
 

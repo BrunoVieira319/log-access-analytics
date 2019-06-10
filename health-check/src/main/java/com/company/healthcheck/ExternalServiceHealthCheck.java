@@ -10,8 +10,8 @@ public class ExternalServiceHealthCheck extends HealthCheck {
     private OkHttpClient client;
     private String url;
 
-    public ExternalServiceHealthCheck(String url) {
-        this.client = new OkHttpClient();
+    public ExternalServiceHealthCheck(String url, OkHttpClient client) {
+        this.client = client;
         this.url = url;
     }
 

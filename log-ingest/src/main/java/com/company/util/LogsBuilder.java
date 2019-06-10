@@ -14,10 +14,10 @@ public class LogsBuilder {
     public static List<Document> build(String text) {
         List<Document> documents = new ArrayList<>();
 
-        Stream<String> lines = text.lines();
+        Stream<String> lines = Arrays.stream(text.split("\\r?\\n"));
         lines.forEach(l -> {
             List<String> dataLog = Arrays.stream(l.split(" "))
-                    .filter(d -> !d.isBlank())
+                    .filter(d -> !d.trim().isEmpty())
                     .collect(Collectors.toList());
 
             documents.add(
