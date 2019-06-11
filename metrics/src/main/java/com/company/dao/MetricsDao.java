@@ -14,13 +14,13 @@ import java.util.Arrays;
 
 import static com.mongodb.client.model.Filters.*;
 
-public class MetricsDao {
+public class MetricsDao implements BaseDao {
 
     private MongoClient mongoClient;
     private MongoDatabase db;
 
-    public MetricsDao() {
-        this.mongoClient = new MongoClient("localhost", 27017);
+    public MetricsDao(MongoClient mongoClient) {
+        this.mongoClient = mongoClient;
         this.db = mongoClient.getDatabase("logs");
     }
 
@@ -32,8 +32,9 @@ public class MetricsDao {
         );
     }
 
+    @Override
     public Iterable<Document> getLogsGroupedByUrl() {
-        AggregateIterable<Document> queryResult = db.getCollection("logs").aggregate(
+        Iterable<Document> queryResult = db.getCollection("logs").aggregate(
                 Arrays.asList(
                         Aggregates.sortByCount("$url"),
                         Aggregates.project(getProjectionFields())
@@ -42,6 +43,7 @@ public class MetricsDao {
         return queryResult;
     }
 
+    @Override
     public Iterable<Document> getLogsGroupedByRegionAndUrl() {
         Document group = new Document("region", "$region")
                 .append("url", "$url");
@@ -60,7 +62,8 @@ public class MetricsDao {
         return queryResult;
     }
 
-    public Iterable<Document> getUrlsAccessedBetween(LocalDate initialDate, LocalDate finalDate) {
+    @Override
+    public Iterable<Document> getLogsGroupedByUrlsAccessedBetween(LocalDate initialDate, LocalDate finalDate) {
         Iterable<Document> queryResult = db.getCollection("logs").aggregate(
                 Arrays.asList(
                         Aggregates.match(and(gte("timestamp", initialDate), lte("timestamp", finalDate))),
@@ -71,6 +74,7 @@ public class MetricsDao {
         return queryResult;
     }
 
+    @Override
     public Iterable<Document> getLogsGroupedByMinute() {
         Document group = new Document("hour", new Document("$hour", "$timestamp"))
                 .append("minute", new Document("$minute", "$timestamp"));

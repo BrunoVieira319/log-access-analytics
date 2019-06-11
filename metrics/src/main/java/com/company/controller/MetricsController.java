@@ -22,8 +22,8 @@ public class MetricsController {
 
     private final MetricsService metricsService;
 
-    public MetricsController() {
-        this.metricsService = new MetricsService();
+    public MetricsController(MetricsService metricsService) {
+        this.metricsService = metricsService;
     }
 
     @GET

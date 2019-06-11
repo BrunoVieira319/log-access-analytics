@@ -1,6 +1,6 @@
 package com.company.service;
 
-import com.company.dao.MetricsDao;
+import com.company.dao.BaseDao;
 import com.company.dto.DateQueryDto;
 import com.company.dto.LogDto;
 import com.company.dto.RegionDto;
@@ -17,10 +17,10 @@ import java.util.stream.IntStream;
 
 public class MetricsService {
 
-    private MetricsDao metricsDao;
+    private BaseDao metricsDao;
 
-    public MetricsService() {
-        this.metricsDao = new MetricsDao();
+    public MetricsService(BaseDao metricsDao) {
+        this.metricsDao = metricsDao;
     }
 
     public List<LogDto> findMostAccessedUrls(int limit) {
@@ -45,7 +45,7 @@ public class MetricsService {
         List<RegionDto> regions = new ArrayList<>();
 
         IntStream.range(1, 4).forEach(region -> {
-            List<LogDto> urls = getLogsFromRegion(allLogs, region);
+            List<LogDto> urls = getLogsFromRegion(region, allLogs);
             RegionDto regionDto = DtoCreator.regionDto(region, getTop(urls, limit));
 
             regions.add(regionDto);
@@ -79,7 +79,7 @@ public class MetricsService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDate localDate = LocalDate.parse(day, formatter);
 
-            return metricsDao.getUrlsAccessedBetween(localDate, localDate.plusDays(1));
+            return metricsDao.getLogsGroupedByUrlsAccessedBetween(localDate, localDate.plusDays(1));
         } catch (Exception e) {
             System.out.println("Parâmetro day inválido");
             return null;
@@ -97,7 +97,7 @@ public class MetricsService {
 
             LocalDate lastWeekDay = firstWeekDay.plusWeeks(1);
 
-            return metricsDao.getUrlsAccessedBetween(firstWeekDay, lastWeekDay);
+            return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstWeekDay, lastWeekDay);
         } catch (Exception e) {
             System.out.println("Parâmetro week inválido");
             return null;
@@ -110,14 +110,14 @@ public class MetricsService {
             LocalDate firstDayOfTheYear = y.atDay(1);
             LocalDate lastDayOfTheYear = firstDayOfTheYear.plusYears(1);
 
-            return metricsDao.getUrlsAccessedBetween(firstDayOfTheYear, lastDayOfTheYear);
+            return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstDayOfTheYear, lastDayOfTheYear);
         } catch (Exception e) {
             System.out.println("Parâmetro year inválido");
             return null;
         }
     }
 
-    private List<LogDto> getLogsFromRegion(List<LogDto> logs, int region) {
+    private List<LogDto> getLogsFromRegion(int region, List<LogDto> logs) {
         return logs.stream()
                 .filter(l -> l.getRegion() == region)
                 .collect(Collectors.toList());
@@ -142,20 +142,15 @@ public class MetricsService {
     }
 
     private List<LogDto> documentsToDto(Iterable<Document> iterable) {
-        try {
-            List<LogDto> logs = new ArrayList<>();
-            iterable.forEach(document -> {
-                LogDto logDto = DtoCreator.logDto(
-                        document.getInteger("region"),
-                        document.getString("url"),
-                        document.getInteger("count"));
-                logs.add(logDto);
-            });
+        List<LogDto> logs = new ArrayList<>();
+        iterable.forEach(document -> {
+            LogDto logDto = DtoCreator.logDto(
+                    document.getInteger("region"),
+                    document.getString("url"),
+                    document.getInteger("count"));
+            logs.add(logDto);
+        });
 
-            return logs;
-        } catch (Exception e) {
-            System.out.println("Não foi possível gerar LogsDto");
-            return null;
-        }
+        return logs;
     }
 }

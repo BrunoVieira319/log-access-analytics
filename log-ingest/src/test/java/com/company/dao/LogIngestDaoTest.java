@@ -51,7 +51,7 @@ public class LogIngestDaoTest {
 
     @Test
     public void shouldPersistFiveLogsInDB() {
-        BaseDao baseDao = new LogIngestDao(mongoClient);
+        LogIngestDao baseDao = new LogIngestDao(mongoClient);
 
         List<Document> logs = new ArrayList<>();
         IntStream.range(0, 5).forEach(n -> logs.add(new Document()));

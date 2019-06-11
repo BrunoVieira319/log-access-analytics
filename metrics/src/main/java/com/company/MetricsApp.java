@@ -1,7 +1,10 @@
 package com.company;
 
 import com.company.controller.MetricsController;
+import com.company.dao.BaseDao;
+import com.company.dao.MetricsDao;
 import com.company.healthcheck.MetricsHealthCheck;
+import com.company.service.MetricsService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -16,8 +19,12 @@ public class MetricsApp extends Application<MetricsConfiguration> {
     }
 
     @Override
-    public void run(MetricsConfiguration configuration, Environment environment) throws Exception {
-        environment.jersey().register(new MetricsController());
+    public void run(MetricsConfiguration config, Environment environment) throws Exception {
+        BaseDao metricsDao = new MetricsDao(config.getMongoClient());
+        MetricsService metricsService = new MetricsService(metricsDao);
+        MetricsController metricsController = new MetricsController(metricsService);
+
+        environment.jersey().register(metricsController);
         environment.healthChecks().register("metrics", new MetricsHealthCheck());
     }
 }
