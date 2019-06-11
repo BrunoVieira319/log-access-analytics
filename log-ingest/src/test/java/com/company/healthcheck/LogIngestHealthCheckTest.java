@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 public class LogIngestHealthCheckTest {
 
-
     LogIngestHealthCheck healthCheck;
 
     @Before

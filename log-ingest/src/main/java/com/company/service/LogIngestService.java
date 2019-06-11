@@ -1,23 +1,21 @@
 package com.company.service;
 
-
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.company.dao.BaseDao;
+import com.company.util.LogsBuilder;
 import org.bson.Document;
 
 import java.util.List;
 
 public class LogIngestService {
 
-    MongoClient mongoClient;
-    MongoDatabase db;
+    private BaseDao dao;
 
-    public LogIngestService() {
-        this.mongoClient = new MongoClient("localhost", 27017);
-        this.db = mongoClient.getDatabase("logs");
+    public LogIngestService(BaseDao dao) {
+        this.dao = dao;
     }
 
-    public void insertLogs(List<Document> logs) {
-        db.getCollection("logs").insertMany(logs);
+    public void insertLogs(String logsAsString) {
+        List<Document> logs = LogsBuilder.build(logsAsString);
+        dao.insertMany(logs);
     }
 }

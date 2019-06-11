@@ -1,6 +1,8 @@
 package com.company;
 
 import com.company.controller.LogIngestController;
+import com.company.dao.BaseDao;
+import com.company.dao.LogIngestDao;
 import com.company.healthcheck.LogIngestHealthCheck;
 import com.company.service.LogIngestService;
 import io.dropwizard.Application;
@@ -18,7 +20,8 @@ public class LogIngestApp extends Application<LogIngestConfiguration> {
 
     @Override
     public void run(LogIngestConfiguration config, Environment environment) throws Exception {
-        LogIngestService logIngestService = new LogIngestService();
+        BaseDao logIngestDao = new LogIngestDao(config.getMongoClient());
+        LogIngestService logIngestService = new LogIngestService(logIngestDao);
         LogIngestController logIngestController = new LogIngestController(logIngestService);
 
         environment.jersey().register(logIngestController);

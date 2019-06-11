@@ -21,6 +21,6 @@ public class LogIngestController {
     @Path("/ingest")
     @Consumes(MediaType.TEXT_PLAIN)
     public void saveLogs(String logs) {
-        logIngestService.insertLogs(LogsBuilder.build(logs));
+        logIngestService.insertLogs(logs);
     }
 }

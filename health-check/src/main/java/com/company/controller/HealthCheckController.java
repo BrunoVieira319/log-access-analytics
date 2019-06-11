@@ -14,18 +14,16 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class HealthCheckController {
 
-    private HealthCheckRegistry registry;
-    private HealthCheckService service;
+    private HealthCheckService healthCheckService;
 
-    public HealthCheckController(HealthCheckRegistry registry) {
-        this.registry = registry;
-        this.service = new HealthCheckService();
+    public HealthCheckController(HealthCheckService healthCheckService) {
+        this.healthCheckService = healthCheckService;
     }
 
     @GET
     @Path("/health")
     public Response getStatus() {
-        return service.runHealthChecks(registry);
+        return healthCheckService.runHealthChecks();
     }
 
 }

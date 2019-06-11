@@ -10,7 +10,13 @@ import java.util.SortedMap;
 
 public class HealthCheckService {
 
-    public Response runHealthChecks(HealthCheckRegistry registry) {
+    private HealthCheckRegistry registry;
+
+    public HealthCheckService(HealthCheckRegistry registry) {
+        this.registry = registry;
+    }
+
+    public Response runHealthChecks() {
         SortedMap<String, HealthCheck.Result> results = registry.runHealthChecks();
         List<String> unhealthyResults = extractUnhealthyResults(results);
 

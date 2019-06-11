@@ -4,6 +4,7 @@ import com.codahale.metrics.health.HealthCheckRegistry;
 import com.company.controller.HealthCheckController;
 import com.company.healthcheck.DatabaseHealthCheck;
 import com.company.healthcheck.ExternalServiceHealthCheck;
+import com.company.service.HealthCheckService;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -24,7 +25,8 @@ public class HealthCheckApp extends Application<HealthCheckConfiguration> {
         registry.register("LogIngest", new ExternalServiceHealthCheck("http://localhost:8083/healthcheck", config.getHttpClient()));
         registry.register("MongoDb", new DatabaseHealthCheck(config.getMongoClient()));
 
-        HealthCheckController controller = new HealthCheckController(registry);
+        HealthCheckService service = new HealthCheckService(registry);
+        HealthCheckController controller = new HealthCheckController(service);
 
         environment.jersey().register(controller);
     }
