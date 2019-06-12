@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface BaseDao {
 
-    public void insertMany(List<Document> logs);
+    void insertMany(List<Document> logs);
 }

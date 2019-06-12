@@ -17,8 +17,8 @@ public class LogsBuilder {
         Stream<String> lines = Arrays.stream(text.split("\\r?\\n"));
         lines.forEach(l -> {
             List<String> dataLog = Arrays.stream(l.split(" "))
+                    .map(String::trim)
                     .filter(d -> !d.trim().isEmpty())
-                    .map(d -> d.trim())
                     .collect(Collectors.toList());
 
             documents.add(

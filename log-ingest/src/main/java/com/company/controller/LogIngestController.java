@@ -1,7 +1,6 @@
 package com.company.controller;
 
 import com.company.service.LogIngestService;
-import com.company.util.LogsBuilder;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

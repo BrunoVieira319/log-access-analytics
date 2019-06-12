@@ -1,7 +1,6 @@
 package com.company.dao;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -16,12 +15,10 @@ import static com.mongodb.client.model.Filters.*;
 
 public class MetricsDao implements BaseDao {
 
-    private MongoClient mongoClient;
     private MongoDatabase db;
 
     public MetricsDao(MongoClient mongoClient) {
-        this.mongoClient = mongoClient;
-        this.db = this.mongoClient.getDatabase("logs");
+        this.db = mongoClient.getDatabase("logs");
     }
 
     private Bson getProjectionFields() {

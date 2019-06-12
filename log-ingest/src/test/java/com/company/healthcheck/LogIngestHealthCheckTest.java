@@ -16,7 +16,7 @@ public class LogIngestHealthCheckTest {
     }
 
     @Test
-    public void shouldReturnHealthy() throws Exception {
+    public void shouldReturnHealthy() {
         HealthCheck.Result result = healthCheck.check();
         assertTrue(result.isHealthy());
     }

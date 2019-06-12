@@ -19,7 +19,7 @@ public class HealthCheckApp extends Application<HealthCheckConfiguration> {
     }
 
     @Override
-    public void run(HealthCheckConfiguration config, Environment environment) throws Exception {
+    public void run(HealthCheckConfiguration config, Environment environment) {
         HealthCheckRegistry registry = new HealthCheckRegistry();
         registry.register("Metrics", new ExternalServiceHealthCheck("http://localhost:8081/healthcheck", config.getHttpClient()));
         registry.register("LogIngest", new ExternalServiceHealthCheck("http://localhost:8083/healthcheck", config.getHttpClient()));

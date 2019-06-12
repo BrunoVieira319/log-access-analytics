@@ -36,13 +36,8 @@ public class MetricsDaoTest {
 
     private void persistSomeDocs() {
         MongoCollection<Document> collection = mongoClient.getDatabase("logs").getCollection("logs");
-        IntStream.range(0, 5).forEach(i -> {
-            collection.insertOne(createDocument("id", 1528732598000L, "url/1", 1));
-        });
-
-        IntStream.range(0, 3).forEach(i -> {
-            collection.insertOne(createDocument("id", 992274998000L, "url/2", 2));
-        });
+        IntStream.range(0, 5).forEach(i -> collection.insertOne(createDocument("id", 1528732598000L, "url/1", 1)));
+        IntStream.range(0, 3).forEach(i -> collection.insertOne(createDocument("id", 992274998000L, "url/2", 2)));
     }
 
     private Document createDocument(String id, long timestamp, String url, int region) {
@@ -106,7 +101,7 @@ public class MetricsDaoTest {
 
     private List<Document> iterableToList(Iterable<Document> result) {
         List<Document> resultAsList = new ArrayList<>();
-        result.forEach(r -> resultAsList.add(r));
+        result.forEach(resultAsList::add);
         return resultAsList;
     }
 }

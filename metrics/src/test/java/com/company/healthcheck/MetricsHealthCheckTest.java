@@ -16,7 +16,7 @@ public class MetricsHealthCheckTest {
     }
 
     @Test
-    public void shouldReturnHealthy() throws Exception {
+    public void shouldReturnHealthy() {
         HealthCheck.Result result = metricsHealthCheck.check();
         assertTrue(result.isHealthy());
     }

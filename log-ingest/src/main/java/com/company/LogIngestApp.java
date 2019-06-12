@@ -19,7 +19,7 @@ public class LogIngestApp extends Application<LogIngestConfiguration> {
     }
 
     @Override
-    public void run(LogIngestConfiguration config, Environment environment) throws Exception {
+    public void run(LogIngestConfiguration config, Environment environment) {
         BaseDao logIngestDao = new LogIngestDao(config.getMongoClient());
         LogIngestService logIngestService = new LogIngestService(logIngestDao);
         LogIngestController logIngestController = new LogIngestController(logIngestService);

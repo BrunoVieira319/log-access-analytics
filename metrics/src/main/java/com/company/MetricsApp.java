@@ -19,7 +19,7 @@ public class MetricsApp extends Application<MetricsConfiguration> {
     }
 
     @Override
-    public void run(MetricsConfiguration config, Environment environment) throws Exception {
+    public void run(MetricsConfiguration config, Environment environment) {
         BaseDao metricsDao = new MetricsDao(config.getMongoClient());
         MetricsService metricsService = new MetricsService(metricsDao);
         MetricsController metricsController = new MetricsController(metricsService);

@@ -13,7 +13,7 @@ public class DatabaseHealthCheck extends HealthCheck {
     }
 
     @Override
-    public Result check() throws Exception {
+    public Result check() {
         try {
             mongoClient.getDatabase("logs").runCommand(new Document("ping", 1));
         } catch (Exception e) {

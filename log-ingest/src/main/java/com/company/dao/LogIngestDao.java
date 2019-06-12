@@ -8,11 +8,9 @@ import java.util.List;
 
 public class LogIngestDao implements BaseDao {
 
-    MongoClient mongoClient;
-    MongoDatabase db;
+    private MongoDatabase db;
 
     public LogIngestDao(MongoClient mongoClient) {
-        this.mongoClient = mongoClient;
         this.db = mongoClient.getDatabase("logs");
     }
 

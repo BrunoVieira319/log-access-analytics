@@ -4,7 +4,6 @@ import com.codahale.metrics.health.HealthCheck;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,8 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,7 +26,7 @@ public class DatabaseHealthCheckTest {
     DatabaseHealthCheck databaseHealthCheck;
 
     @Test
-    public void shouldReturnHealthyResultWhenCheckConnection() throws Exception {
+    public void shouldReturnHealthyResultWhenCheckConnection() {
         when(mongoClient.getDatabase(anyString())).thenReturn(db);
         when(db.runCommand(any(Document.class))).thenReturn(any());
         HealthCheck.Result result = databaseHealthCheck.check();
@@ -38,7 +35,7 @@ public class DatabaseHealthCheckTest {
     }
 
     @Test
-    public void shouldReturnUnhealthyResultWhenCheckConnection() throws Exception {
+    public void shouldReturnUnhealthyResultWhenCheckConnection() {
         when(mongoClient.getDatabase(anyString())).thenReturn(db);
         when(db.runCommand(any(Document.class))).thenThrow(RuntimeException.class);
 
