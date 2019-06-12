@@ -20,8 +20,4 @@ public class MetricsConfiguration extends Configuration {
         return defaultName;
     }
 
-    public void setDefaultName(String defaultName) {
-        this.defaultName = defaultName;
-    }
-
 }

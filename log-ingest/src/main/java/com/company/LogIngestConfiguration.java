@@ -19,8 +19,4 @@ public class LogIngestConfiguration extends Configuration {
     public String getDefaultName() {
         return defaultName;
     }
-
-    public void setDefaultName(String defaultName) {
-        this.defaultName = defaultName;
-    }
 }

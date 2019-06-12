@@ -2,13 +2,12 @@ package com.company;
 
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit.DropwizardAppRule;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import java.io.IOException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.assertEquals;
 
@@ -19,15 +18,14 @@ public class HealthCheckAppTest {
             new DropwizardAppRule<>(HealthCheckApp.class, ResourceHelpers.resourceFilePath("config.yml"));
 
     @Test
-    public void shouldTestEndpointWithARequest() throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .get()
-                .url(String.format("http://localhost:%d/laaa/health", RULE.getLocalPort()))
-                .build();
+    public void shouldTestEndpointWithRequest() {
+        Client client = ClientBuilder.newClient();
 
-        Response response = client.newCall(request).execute();
+        Response response = client
+                .target(String.format("http://localhost:%d/laaa/health", RULE.getLocalPort()))
+                .request()
+                .get();
 
-        assertEquals(500, response.code());
+        assertEquals(500, response.getStatus());
     }
 }

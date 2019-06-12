@@ -4,18 +4,16 @@ import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.ws.rs.client.Client;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class HealthCheckConfigurationTest {
+public class MetricsConfigurationTest {
 
-    HealthCheckConfiguration configuration;
+    MetricsConfiguration configuration;
 
     @Before
-    public void initHealthCheckConfiguration() {
-        configuration = new HealthCheckConfiguration();
+    public void initMetricsConfiguration() {
+        configuration = new MetricsConfiguration();
     }
 
     @Test
@@ -25,14 +23,8 @@ public class HealthCheckConfigurationTest {
     }
 
     @Test
-    public void shouldReturnHttpClient() {
-        Client httpClient = configuration.getHttpClient();
-        assertNotNull(httpClient);
-    }
-
-    @Test
     public void shouldReturnDefaultName() {
         String defaultName = configuration.getDefaultName();
-        assertEquals("HealthCheck", defaultName);
+        assertEquals("Metrics", defaultName);
     }
 }

@@ -1,15 +1,8 @@
 package com.company.dao;
 
+import com.company.db.EmbeddedMongoDb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -25,27 +18,23 @@ import static org.junit.Assert.assertEquals;
 
 public class MetricsDaoTest {
 
-    MongodExecutable mongodExe;
-    MongodProcess mongod;
     MongoClient mongoClient;
+    EmbeddedMongoDb db;
 
     @Before
-    public void configureMongoForTests() throws Exception {
-        String bindIp = "localhost";
-        int port = 27018;
-
-        MongodStarter starter = MongodStarter.getDefaultInstance();
-        IMongodConfig mongodConfig = new MongodConfigBuilder()
-                .version(Version.Main.PRODUCTION)
-                .net(new Net(bindIp, port, Network.localhostIsIPv6()))
-                .build();
-        this.mongodExe = starter.prepare(mongodConfig);
-        this.mongod = mongodExe.start();
-        this.mongoClient = new MongoClient(bindIp, port);
-        persistSomeDocs(mongoClient);
+    public void configureMongoForTests() {
+        db = new EmbeddedMongoDb();
+        db.start("localhost", 27018);
+        mongoClient = db.getMongoClient();
+        persistSomeDocs();
     }
 
-    private void persistSomeDocs(MongoClient mongoClient) {
+    @After
+    public void closeConnections() {
+        db.close();
+    }
+
+    private void persistSomeDocs() {
         MongoCollection<Document> collection = mongoClient.getDatabase("logs").getCollection("logs");
         IntStream.range(0, 5).forEach(i -> {
             collection.insertOne(createDocument("id", 1528732598000L, "url/1", 1));
@@ -61,13 +50,6 @@ public class MetricsDaoTest {
                 .append("timestamp", new Date(timestamp))
                 .append("url", url)
                 .append("region", region);
-    }
-
-    @After
-    public void closeConnection() {
-        this.mongoClient.close();
-        this.mongod.stop();
-        this.mongodExe.stop();
     }
 
     @Test

@@ -1,15 +1,8 @@
 package com.company.dao;
 
+import com.company.db.EmbeddedMongoDb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
 import org.bson.Document;
 import org.junit.After;
 import org.junit.Before;
@@ -23,30 +16,19 @@ import static org.junit.Assert.assertEquals;
 
 public class LogIngestDaoTest {
 
-    MongodExecutable mongodExe;
-    MongodProcess mongod;
+    EmbeddedMongoDb db;
     MongoClient mongoClient;
 
     @Before
-    public void configureMongoForTests() throws Exception {
-        String bindIp = "localhost";
-        int port = 27018;
-
-        MongodStarter starter = MongodStarter.getDefaultInstance();
-        IMongodConfig mongodConfig = new MongodConfigBuilder()
-                .version(Version.Main.PRODUCTION)
-                .net(new Net(bindIp, port, Network.localhostIsIPv6()))
-                .build();
-        this.mongodExe = starter.prepare(mongodConfig);
-        this.mongod = mongodExe.start();
-        this.mongoClient = new MongoClient(bindIp, port);
+    public void configureMongoForTests() {
+        db = new EmbeddedMongoDb();
+        db.start("localhost", 27018);
+        mongoClient = db.getMongoClient();
     }
 
     @After
     public void closeConnection() {
-        this.mongoClient.close();
-        this.mongod.stop();
-        this.mongodExe.stop();
+        db.close();
     }
 
     @Test
