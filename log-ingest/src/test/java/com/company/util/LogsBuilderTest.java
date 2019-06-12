@@ -32,6 +32,5 @@ public class LogsBuilderTest {
 
         assertTrue(firstLog.containsKey("timestamp"));
         assertEquals(firstLog.getDate("timestamp"), new Date(1037825323957L));
-
     }
 }

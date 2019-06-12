@@ -21,7 +21,7 @@ public class MetricsDao implements BaseDao {
 
     public MetricsDao(MongoClient mongoClient) {
         this.mongoClient = mongoClient;
-        this.db = mongoClient.getDatabase("logs");
+        this.db = this.mongoClient.getDatabase("logs");
     }
 
     private Bson getProjectionFields() {

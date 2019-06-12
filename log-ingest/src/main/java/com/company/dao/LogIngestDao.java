@@ -18,10 +18,6 @@ public class LogIngestDao implements BaseDao {
 
     @Override
     public void insertMany(List<Document> logs) {
-        try {
-            db.getCollection("logs").insertMany(logs);
-        } catch (Exception e) {
-            System.out.println("Falha ao salvar documentos");
-        }
+        db.getCollection("logs").insertMany(logs);
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 public class RegionDto {
 
     private int region;
-    private List<LogDto> top3url;
+    private List<LogDto> topUrls;
 
     public int getRegion() {
         return region;
@@ -15,11 +15,11 @@ public class RegionDto {
         this.region = region;
     }
 
-    public List<LogDto> getTop3url() {
-        return top3url;
+    public List<LogDto> getTopUrls() {
+        return topUrls;
     }
 
-    public void setTop3url(List<LogDto> top3url) {
-        this.top3url = top3url;
+    public void setTopUrls(List<LogDto> topUrls) {
+        this.topUrls = topUrls;
     }
 }

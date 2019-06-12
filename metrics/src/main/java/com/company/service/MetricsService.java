@@ -69,9 +69,10 @@ public class MetricsService {
         return Arrays.asList(dayDto, weekDto, yearDto);
     }
 
-    public Document findMostAccessedMinute() {
+    public Document findMinuteWithMoreAccess() {
         Iterable<Document> logsGroupedByMinute = metricsDao.getLogsGroupedByMinute();
-        return logsGroupedByMinute.iterator().next();
+        Document minuteWithMoreAccess = logsGroupedByMinute.iterator().next();
+        return minuteWithMoreAccess;
     }
 
     private Iterable<Document> findAccessedUrlsOnDay(String day) {
@@ -82,7 +83,7 @@ public class MetricsService {
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(localDate, localDate.plusDays(1));
         } catch (Exception e) {
             System.out.println("Parâmetro day inválido");
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -100,7 +101,7 @@ public class MetricsService {
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstWeekDay, lastWeekDay);
         } catch (Exception e) {
             System.out.println("Parâmetro week inválido");
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -113,7 +114,7 @@ public class MetricsService {
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstDayOfTheYear, lastDayOfTheYear);
         } catch (Exception e) {
             System.out.println("Parâmetro year inválido");
-            return null;
+            return new ArrayList<>();
         }
     }
 

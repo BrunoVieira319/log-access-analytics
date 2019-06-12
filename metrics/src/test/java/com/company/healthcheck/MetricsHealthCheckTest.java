@@ -6,18 +6,18 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class LogIngestHealthCheckTest {
+public class MetricsHealthCheckTest {
 
-    LogIngestHealthCheck healthCheck;
+    MetricsHealthCheck metricsHealthCheck;
 
     @Before
-    public void initLogIngestHealthCheck() {
-        healthCheck = new LogIngestHealthCheck();
+    public void initMetricsHealthCheck() {
+        metricsHealthCheck = new MetricsHealthCheck();
     }
 
     @Test
     public void shouldReturnHealthy() throws Exception {
-        HealthCheck.Result result = healthCheck.check();
+        HealthCheck.Result result = metricsHealthCheck.check();
         assertTrue(result.isHealthy());
     }
 }

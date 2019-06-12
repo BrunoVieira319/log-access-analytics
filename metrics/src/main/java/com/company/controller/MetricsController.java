@@ -6,6 +6,7 @@ import com.company.dto.LogDto;
 import com.company.dto.MetricsDto;
 import com.company.dto.RegionDto;
 import com.company.service.MetricsService;
+import com.company.util.DtoCreator;
 import org.bson.Document;
 
 import javax.validation.constraints.NotNull;
@@ -34,13 +35,18 @@ public class MetricsController {
             @NotNull @QueryParam("week") String weekYear,
             @NotNull @QueryParam("year") String year
     ) {
-        MetricsDto metricsDto = new MetricsDto();
+        List<LogDto> mostAccessedUrls = metricsService.findMostAccessedUrls(3);
+        List<RegionDto> mostAccessedUrlsPerRegion = metricsService.findMostAccessedUrlsPerRegion(3);
+        List<LogDto> lessAccessedUrls = metricsService.findLessAccessedUrls(1);
+        List<DateQueryDto> mostAccessedUrlsPerDates = metricsService.findMostAccessedUrlsPerDates(day, weekYear, year, 3);
+        Document minuteWithMoreAccess = metricsService.findMinuteWithMoreAccess();
 
-        metricsDto.setTop3WorldwideUrl(metricsService.findMostAccessedUrls(3));
-        metricsDto.setTop3RegionalUrl(metricsService.findMostAccessedUrlsPerRegion(3));
-        metricsDto.setLessAccessedUrl(metricsService.findLessAccessedUrls(1));
-        metricsDto.setMostAccessedUrlPerDate(metricsService.findMostAccessedUrlsPerDates(day, weekYear, year,3));
-        metricsDto.setMostAccessedTime(metricsService.findMostAccessedMinute());
+        MetricsDto metricsDto = DtoCreator.metricsDto(
+                mostAccessedUrls,
+                mostAccessedUrlsPerRegion,
+                lessAccessedUrls,
+                mostAccessedUrlsPerDates,
+                minuteWithMoreAccess);
 
         return metricsDto;
     }
@@ -72,13 +78,13 @@ public class MetricsController {
     public List<DateQueryDto> getDateMetrics(
             @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
     ) {
-        return metricsService.findMostAccessedUrlsPerDates(day, weekYear, year,3);
+        return metricsService.findMostAccessedUrlsPerDates(day, weekYear, year, 3);
     }
 
     @GET
     @Path("/metrics/5")
     @Timed
     public Document getMostAccessedMinute() {
-        return metricsService.findMostAccessedMinute();
+        return metricsService.findMinuteWithMoreAccess();
     }
 }

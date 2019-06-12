@@ -5,7 +5,7 @@ import java.util.List;
 public class DateQueryDto {
 
     private String date;
-    private List<LogDto> top3url;
+    private List<LogDto> topUrls;
 
     public String getDate() {
         return date;
@@ -15,11 +15,11 @@ public class DateQueryDto {
         this.date = date;
     }
 
-    public List<LogDto> getTop3url() {
-        return top3url;
+    public List<LogDto> getTopUrls() {
+        return topUrls;
     }
 
-    public void setTop3url(List<LogDto> top3url) {
-        this.top3url = top3url;
+    public void setTopUrls(List<LogDto> topUrls) {
+        this.topUrls = topUrls;
     }
 }
