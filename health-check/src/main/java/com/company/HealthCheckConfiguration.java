@@ -1,6 +1,5 @@
 package com.company;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
@@ -9,7 +8,7 @@ import okhttp3.OkHttpClient;
 
 public class HealthCheckConfiguration extends Configuration {
 
-    private String defaultName = "LogAccessHealthCheck";
+    private String defaultName = "HealthCheck";
     private MongoClient mongoClient;
     private OkHttpClient httpClient;
 
@@ -32,9 +31,4 @@ public class HealthCheckConfiguration extends Configuration {
     public String getDefaultName() {
         return defaultName;
     }
-
-    public void setDefaultName(String defaultName) {
-        this.defaultName = defaultName;
-    }
-
 }

@@ -1,6 +1,5 @@
 package com.company.controller;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
 import com.company.service.HealthCheckService;
 
 import javax.ws.rs.GET;
