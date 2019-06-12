@@ -5,6 +5,7 @@ import com.company.dto.DateQueryDto;
 import com.company.dto.LogDto;
 import com.company.dto.RegionDto;
 import com.company.util.DtoCreator;
+import com.google.common.flogger.FluentLogger;
 import org.bson.Document;
 
 import java.time.LocalDate;
@@ -17,6 +18,8 @@ import java.util.stream.IntStream;
 
 public class MetricsService {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     private BaseDao metricsDao;
 
     public MetricsService(BaseDao metricsDao) {
@@ -24,6 +27,7 @@ public class MetricsService {
     }
 
     public List<LogDto> findMostAccessedUrls(int limit) {
+        logger.atInfo().log("Finding most accessed urls");
         Iterable<Document> bsonLogs = metricsDao.getLogsGroupedByUrl();
         List<LogDto> logs = documentsToDto(bsonLogs);
 
@@ -31,6 +35,7 @@ public class MetricsService {
     }
 
     public List<LogDto> findLessAccessedUrls(int limit) {
+        logger.atInfo().log("Finding less accessed urls");
         Iterable<Document> bsonLogs = metricsDao.getLogsGroupedByUrl();
         List<LogDto> logs = documentsToDto(bsonLogs);
         Collections.reverse(logs);
@@ -39,6 +44,7 @@ public class MetricsService {
     }
 
     public List<RegionDto> findMostAccessedUrlsPerRegion(int limit) {
+        logger.atInfo().log("Finding most accessed urls per region");
         Iterable<Document> bsonLogs = metricsDao.getLogsGroupedByRegionAndUrl();
         List<LogDto> allLogs = documentsToDto(bsonLogs);
 
@@ -54,6 +60,7 @@ public class MetricsService {
     }
 
     public List<DateQueryDto> findMostAccessedUrlsPerDates(String day, String weekYear, String year, int limit) {
+        logger.atInfo().log("Finding most accessed urls on day:%s, week:%s, year:%s", day, weekYear, year);
         Iterable<Document> logsOfDay = findAccessedUrlsOnDay(day);
         Iterable<Document> logsOfWeek = findAccessedUrlsInWeek(weekYear);
         Iterable<Document> logsOfYear = findAccessedUrlsInYear(year);
@@ -70,24 +77,27 @@ public class MetricsService {
     }
 
     public Document findMinuteWithMoreAccess() {
+        logger.atInfo().log("Finding the minute with more access in all urls");
         Iterable<Document> logsGroupedByMinute = metricsDao.getLogsGroupedByMinute();
         Document minuteWithMoreAccess = logsGroupedByMinute.iterator().next();
         return minuteWithMoreAccess;
     }
 
     private Iterable<Document> findAccessedUrlsOnDay(String day) {
+        logger.atInfo().log("Finding urls from day %s", day);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDate localDate = LocalDate.parse(day, formatter);
 
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(localDate, localDate.plusDays(1));
-        } catch (Exception e) {
-            System.out.println("Parâmetro day inválido");
+        } catch (Exception exception) {
+            logger.atInfo().withCause(exception).log("Error on trying to parse the day %s", day);
             return new ArrayList<>();
         }
     }
 
     private Iterable<Document> findAccessedUrlsInWeek(String weekYear) {
+        logger.atInfo().log("Finding urls from week %s", weekYear);
         try {
             String[] separatedWeekYear = weekYear.split("-");
             WeekFields weekFields = WeekFields.of(Locale.getDefault());
@@ -99,32 +109,35 @@ public class MetricsService {
             LocalDate lastWeekDay = firstWeekDay.plusWeeks(1);
 
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstWeekDay, lastWeekDay);
-        } catch (Exception e) {
-            System.out.println("Parâmetro week inválido");
+        } catch (Exception exception) {
+            logger.atInfo().withCause(exception).log("Error on trying to parse the week %s", weekYear);
             return new ArrayList<>();
         }
     }
 
     private Iterable<Document> findAccessedUrlsInYear(String year) {
+        logger.atInfo().log("Finding urls from year %s", year);
         try {
-            Year y = Year.of(Integer.valueOf(year));
-            LocalDate firstDayOfTheYear = y.atDay(1);
+            Year yearClass = Year.of(Integer.valueOf(year));
+            LocalDate firstDayOfTheYear = yearClass.atDay(1);
             LocalDate lastDayOfTheYear = firstDayOfTheYear.plusYears(1);
 
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstDayOfTheYear, lastDayOfTheYear);
-        } catch (Exception e) {
-            System.out.println("Parâmetro year inválido");
+        } catch (Exception exception) {
+            logger.atInfo().withCause(exception).log("Error on trying to parse the year %s", year);
             return new ArrayList<>();
         }
     }
 
     private List<LogDto> getLogsFromRegion(int region, List<LogDto> logs) {
+        logger.atInfo().log("Getting logs from region %s", region);
         return logs.stream()
                 .filter(l -> l.getRegion() == region)
                 .collect(Collectors.toList());
     }
 
     private List<LogDto> getTop(List<LogDto> list, int limit) {
+        logger.atInfo().log("Getting %s first logs in the list", limit);
         try {
             int target = list.get(0).getCount();
             int occurrences = (int) list.stream().filter(l -> l.getCount() == target).count();
@@ -136,13 +149,14 @@ public class MetricsService {
                 return list.subList(0, limit);
             }
             return list;
-        } catch (Exception e) {
-            System.out.println("Lista vazia, pois nenhum resultado foi encontrado");
+        } catch (Exception exception) {
+            logger.atInfo().withCause(exception).log("Possibly no one logs was found in the search");
             return list;
         }
     }
 
     private List<LogDto> documentsToDto(Iterable<Document> iterable) {
+        logger.atInfo().log("Converting Documents to LogsDto");
         List<LogDto> logs = new ArrayList<>();
         iterable.forEach(document -> {
             LogDto logDto = DtoCreator.logDto(

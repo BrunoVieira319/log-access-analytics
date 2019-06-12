@@ -1,6 +1,7 @@
 package com.company.controller;
 
 import com.company.service.HealthCheckService;
+import com.google.common.flogger.FluentLogger;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

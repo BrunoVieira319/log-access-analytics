@@ -1,5 +1,6 @@
 package com.company.dao;
 
+import com.google.common.flogger.FluentLogger;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
@@ -14,6 +15,8 @@ import java.util.Arrays;
 import static com.mongodb.client.model.Filters.*;
 
 public class MetricsDao implements BaseDao {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private MongoDatabase db;
 
@@ -31,6 +34,7 @@ public class MetricsDao implements BaseDao {
 
     @Override
     public Iterable<Document> getLogsGroupedByUrl() {
+        logger.atInfo().log("Fetching logs from database");
         Iterable<Document> queryResult = db.getCollection("logs").aggregate(
                 Arrays.asList(
                         Aggregates.sortByCount("$url"),
@@ -42,6 +46,7 @@ public class MetricsDao implements BaseDao {
 
     @Override
     public Iterable<Document> getLogsGroupedByRegionAndUrl() {
+        logger.atInfo().log("Fetching logs from database");
         Document group = new Document("region", "$region")
                 .append("url", "$url");
 
@@ -61,6 +66,7 @@ public class MetricsDao implements BaseDao {
 
     @Override
     public Iterable<Document> getLogsGroupedByUrlsAccessedBetween(LocalDate initialDate, LocalDate finalDate) {
+        logger.atInfo().log("Fetching logs from database");
         Iterable<Document> queryResult = db.getCollection("logs").aggregate(
                 Arrays.asList(
                         Aggregates.match(and(gte("timestamp", initialDate), lte("timestamp", finalDate))),
@@ -73,6 +79,7 @@ public class MetricsDao implements BaseDao {
 
     @Override
     public Iterable<Document> getLogsGroupedByMinute() {
+        logger.atInfo().log("Fetching logs from database");
         Document group = new Document("hour", new Document("$hour", "$timestamp"))
                 .append("minute", new Document("$minute", "$timestamp"));
 

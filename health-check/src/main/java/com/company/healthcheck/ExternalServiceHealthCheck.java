@@ -1,11 +1,14 @@
 package com.company.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.google.common.flogger.FluentLogger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
 public class ExternalServiceHealthCheck extends HealthCheck {
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private Client client;
     private String url;
@@ -17,6 +20,7 @@ public class ExternalServiceHealthCheck extends HealthCheck {
 
     @Override
     protected Result check() {
+        logger.atInfo().log("Verifying HealthCheck at %s", url );
         Response response = client
                 .target(url)
                 .request()
@@ -25,6 +29,6 @@ public class ExternalServiceHealthCheck extends HealthCheck {
         if (response.getStatus() == 200) {
             return Result.healthy();
         }
-        return Result.unhealthy(response.readEntity(String.class));
+        return Result.unhealthy("Failed to connect to " + url);
     }
 }

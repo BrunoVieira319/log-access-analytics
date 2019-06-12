@@ -5,12 +5,16 @@ import com.company.dao.BaseDao;
 import com.company.dao.MetricsDao;
 import com.company.healthcheck.MetricsHealthCheck;
 import com.company.service.MetricsService;
+import com.google.common.flogger.FluentLogger;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
 public class MetricsApp extends Application<MetricsConfiguration> {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     public static void main(String[] args) {
+        logger.atInfo().log("Starting Metrics Service");
         try {
             new MetricsApp().run(args);
         } catch (Exception e) {

@@ -1,6 +1,5 @@
 package com.company.controller;
 
-import com.codahale.metrics.annotation.Timed;
 import com.company.dto.DateQueryDto;
 import com.company.dto.LogDto;
 import com.company.dto.MetricsDto;
@@ -29,7 +28,6 @@ public class MetricsController {
 
     @GET
     @Path("/metrics")
-    @Timed
     public MetricsDto getMetrics(
             @NotNull @QueryParam("day") String day,
             @NotNull @QueryParam("week") String weekYear,
@@ -53,28 +51,24 @@ public class MetricsController {
 
     @GET
     @Path("/metrics/1")
-    @Timed
     public List<LogDto> getMostAccessedUrls() {
         return metricsService.findMostAccessedUrls(3);
     }
 
     @GET
     @Path("/metrics/2")
-    @Timed
     public List<RegionDto> getMostAccessedUrlsPerRegion() {
         return metricsService.findMostAccessedUrlsPerRegion(3);
     }
 
     @GET
     @Path("/metrics/3")
-    @Timed
     public List<LogDto> getLessAccessedUrls() {
         return metricsService.findLessAccessedUrls(1);
     }
 
     @GET
     @Path("/metrics/4")
-    @Timed
     public List<DateQueryDto> getDateMetrics(
             @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
     ) {
@@ -83,7 +77,6 @@ public class MetricsController {
 
     @GET
     @Path("/metrics/5")
-    @Timed
     public Document getMostAccessedMinute() {
         return metricsService.findMinuteWithMoreAccess();
     }
