@@ -5,6 +5,7 @@ import com.company.controller.HealthCheckController;
 import com.company.healthcheck.DatabaseHealthCheck;
 import com.company.healthcheck.ExternalServiceHealthCheck;
 import com.company.service.HealthCheckService;
+import com.company.util.CustomExceptionMapper;
 import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LoggerConfig;
 import io.dropwizard.Application;
@@ -37,6 +38,7 @@ public class HealthCheckApp extends Application<HealthCheckConfiguration> {
         HealthCheckService service = new HealthCheckService(registry);
         HealthCheckController controller = new HealthCheckController(service);
 
+        environment.jersey().register(new CustomExceptionMapper());
         environment.jersey().register(controller);
     }
 }

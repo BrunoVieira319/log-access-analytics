@@ -1,5 +1,6 @@
 defaultName: HealthCheck
 server:
+  registerDefaultExceptionMappers: false
   applicationConnectors:
     - type: http
       port: 8084

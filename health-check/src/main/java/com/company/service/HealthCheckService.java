@@ -20,7 +20,7 @@ public class HealthCheckService {
     }
 
     public Response runHealthChecks() {
-        logger.atInfo().log("Running registered HealthChecks");
+        logger.atInfo().log("Running registered health checks");
         SortedMap<String, HealthCheck.Result> results = registry.runHealthChecks();
         List<String> unhealthyResults = extractUnhealthyResults(results);
 

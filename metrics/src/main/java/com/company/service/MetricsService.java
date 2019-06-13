@@ -6,6 +6,7 @@ import com.company.dto.LogDto;
 import com.company.dto.RegionDto;
 import com.company.util.DtoCreator;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.StackSize;
 import org.bson.Document;
 
 import java.time.LocalDate;
@@ -84,20 +85,22 @@ public class MetricsService {
     }
 
     private Iterable<Document> findAccessedUrlsOnDay(String day) {
-        logger.atInfo().log("Finding urls from day %s", day);
+        logger.atInfo().log("Parsing day %s", day);
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             LocalDate localDate = LocalDate.parse(day, formatter);
 
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(localDate, localDate.plusDays(1));
         } catch (Exception exception) {
-            logger.atInfo().withCause(exception).log("Error on trying to parse the day %s", day);
+            logger.atInfo()
+                    .withStackTrace(StackSize.SMALL)
+                    .log("Error on trying to parse the day %s", day);
             return new ArrayList<>();
         }
     }
 
     private Iterable<Document> findAccessedUrlsInWeek(String weekYear) {
-        logger.atInfo().log("Finding urls from week %s", weekYear);
+        logger.atInfo().log("Parsing week %s", weekYear);
         try {
             String[] separatedWeekYear = weekYear.split("-");
             WeekFields weekFields = WeekFields.of(Locale.getDefault());
@@ -110,13 +113,15 @@ public class MetricsService {
 
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstWeekDay, lastWeekDay);
         } catch (Exception exception) {
-            logger.atInfo().withCause(exception).log("Error on trying to parse the week %s", weekYear);
+            logger.atInfo()
+                    .withStackTrace(StackSize.SMALL)
+                    .log("Error on trying to parse the week %s", weekYear);
             return new ArrayList<>();
         }
     }
 
     private Iterable<Document> findAccessedUrlsInYear(String year) {
-        logger.atInfo().log("Finding urls from year %s", year);
+        logger.atInfo().log("Parsing year %s", year);
         try {
             Year yearClass = Year.of(Integer.valueOf(year));
             LocalDate firstDayOfTheYear = yearClass.atDay(1);
@@ -124,7 +129,9 @@ public class MetricsService {
 
             return metricsDao.getLogsGroupedByUrlsAccessedBetween(firstDayOfTheYear, lastDayOfTheYear);
         } catch (Exception exception) {
-            logger.atInfo().withCause(exception).log("Error on trying to parse the year %s", year);
+            logger.atInfo()
+                    .withStackTrace(StackSize.SMALL)
+                    .log("Error on trying to parse the year %s", year);
             return new ArrayList<>();
         }
     }
@@ -149,8 +156,14 @@ public class MetricsService {
                 return list.subList(0, limit);
             }
             return list;
+        } catch (IndexOutOfBoundsException exception) {
+            logger.atInfo()
+                    .log("Possibly no one logs was found | %s", exception.getMessage());
+            return list;
         } catch (Exception exception) {
-            logger.atInfo().withCause(exception).log("Possibly no one logs was found in the search");
+            logger.atInfo()
+                    .withStackTrace(StackSize.SMALL)
+                    .log("Error on trying to get logs from list");
             return list;
         }
     }
@@ -165,7 +178,6 @@ public class MetricsService {
                     document.getInteger("count"));
             logs.add(logDto);
         });
-
         return logs;
     }
 }

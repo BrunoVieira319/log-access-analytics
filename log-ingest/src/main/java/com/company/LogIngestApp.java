@@ -5,12 +5,17 @@ import com.company.dao.BaseDao;
 import com.company.dao.LogIngestDao;
 import com.company.healthcheck.LogIngestHealthCheck;
 import com.company.service.LogIngestService;
+import com.company.util.CustomExceptionMapper;
+import com.google.common.flogger.FluentLogger;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
 public class LogIngestApp extends Application<LogIngestConfiguration> {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     public static void main(String[] args) {
+        logger.atInfo().log("Starting Log Ingest Service");
         try {
             new LogIngestApp().run(args);
         } catch (Exception e) {
@@ -25,6 +30,7 @@ public class LogIngestApp extends Application<LogIngestConfiguration> {
         LogIngestController logIngestController = new LogIngestController(logIngestService);
 
         environment.jersey().register(logIngestController);
+        environment.jersey().register(new CustomExceptionMapper());
         environment.healthChecks().register("log", new LogIngestHealthCheck());
     }
 }

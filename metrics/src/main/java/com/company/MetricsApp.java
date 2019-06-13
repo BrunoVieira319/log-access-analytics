@@ -5,6 +5,7 @@ import com.company.dao.BaseDao;
 import com.company.dao.MetricsDao;
 import com.company.healthcheck.MetricsHealthCheck;
 import com.company.service.MetricsService;
+import com.company.util.CustomExceptionMapper;
 import com.google.common.flogger.FluentLogger;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
@@ -29,6 +30,7 @@ public class MetricsApp extends Application<MetricsConfiguration> {
         MetricsController metricsController = new MetricsController(metricsService);
 
         environment.jersey().register(metricsController);
+        environment.jersey().register(new CustomExceptionMapper());
         environment.healthChecks().register("metrics", new MetricsHealthCheck());
     }
 }

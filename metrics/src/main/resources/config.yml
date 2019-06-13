@@ -1,5 +1,6 @@
 defaultName: Metrics
 server:
+  registerDefaultExceptionMappers: false
   applicationConnectors:
     - type: http
       port: 8080

@@ -1,6 +1,7 @@
 package com.company.dao;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.StackSize;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Accumulators;
@@ -35,13 +36,20 @@ public class MetricsDao implements BaseDao {
     @Override
     public Iterable<Document> getLogsGroupedByUrl() {
         logger.atInfo().log("Fetching logs from database");
-        Iterable<Document> queryResult = db.getCollection("logs").aggregate(
-                Arrays.asList(
-                        Aggregates.sortByCount("$url"),
-                        Aggregates.project(getProjectionFields())
-                )
-        );
-        return queryResult;
+        try {
+            return db.getCollection("logs").aggregate(
+                    Arrays.asList(
+                            Aggregates.sortByCount("$url"),
+                            Aggregates.project(getProjectionFields())
+                    )
+            );
+        } catch (Exception e) {
+            logger.atWarning()
+                    .withStackTrace(StackSize.MEDIUM)
+                    .log("Error on trying to persist data on MongoDb");
+
+            return null;
+        }
     }
 
     @Override
