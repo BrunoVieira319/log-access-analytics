@@ -6,6 +6,9 @@ import com.company.dto.MetricsDto;
 import com.company.dto.RegionDto;
 import com.company.service.MetricsService;
 import com.company.util.DtoCreator;
+import com.company.util.LogFile;
+import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import org.bson.Document;
 
 import javax.validation.constraints.NotNull;
@@ -20,10 +23,13 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class MetricsController {
 
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
     private final MetricsService metricsService;
 
     public MetricsController(MetricsService metricsService) {
         this.metricsService = metricsService;
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     @GET
@@ -33,6 +39,7 @@ public class MetricsController {
             @NotNull @QueryParam("week") String weekYear,
             @NotNull @QueryParam("year") String year
     ) {
+        logger.atInfo().log("Endpoint GET /laa/metrics received a request");
         List<LogDto> mostAccessedUrls = metricsService.findMostAccessedUrls(3);
         List<RegionDto> mostAccessedUrlsPerRegion = metricsService.findMostAccessedUrlsPerRegion(3);
         List<LogDto> lessAccessedUrls = metricsService.findLessAccessedUrls(1);
@@ -52,18 +59,21 @@ public class MetricsController {
     @GET
     @Path("/metrics/1")
     public List<LogDto> getMostAccessedUrls() {
+        logger.atInfo().log("Endpoint GET /laa/metrics/1 received a request");
         return metricsService.findMostAccessedUrls(3);
     }
 
     @GET
     @Path("/metrics/2")
     public List<RegionDto> getMostAccessedUrlsPerRegion() {
+        logger.atInfo().log("Endpoint GET /laa/metrics/2 received a request");
         return metricsService.findMostAccessedUrlsPerRegion(3);
     }
 
     @GET
     @Path("/metrics/3")
     public List<LogDto> getLessAccessedUrls() {
+        logger.atInfo().log("Endpoint GET /laa/metrics/3 received a request");
         return metricsService.findLessAccessedUrls(1);
     }
 
@@ -72,12 +82,14 @@ public class MetricsController {
     public List<DateQueryDto> getDateMetrics(
             @QueryParam("day") String day, @QueryParam("week") String weekYear, @QueryParam("year") String year
     ) {
+        logger.atInfo().log("Endpoint GET /laa/metrics/4 received a request");
         return metricsService.findMostAccessedUrlsPerDates(day, weekYear, year, 3);
     }
 
     @GET
     @Path("/metrics/5")
     public Document getMostAccessedMinute() {
+        logger.atInfo().log("Endpoint GET /laa/metrics/5 received a request");
         return metricsService.findMinuteWithMoreAccess();
     }
 }

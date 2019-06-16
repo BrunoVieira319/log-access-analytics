@@ -13,6 +13,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.stream.IntStream;
+
 import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static org.junit.Assert.assertEquals;
 
@@ -43,11 +45,25 @@ public class LogIngestAppTest {
                 "/pets/exotic/cats/10 1037825323957 5b019db5-b3d0-46d2-9963-437860af707f 1",
                 MediaType.TEXT_PLAIN_TYPE);
 
+        waitMongoStart();
+
         Response response = client
                 .target(String.format("http://localhost:%d/laar/ingest", RULE.getLocalPort()))
                 .request()
                 .post(entity);
 
         assertEquals(204, response.getStatus());
+    }
+
+    private void waitMongoStart() {
+        IntStream.range(0,5).forEach(i -> {
+            if (db.getMongoClient() == null) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
