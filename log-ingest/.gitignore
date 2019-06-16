@@ -2,3 +2,5 @@
 /.idea/
 /build/
 /out/
+log-ingest-logs.xml
+log-ingest-logs.xml.lck

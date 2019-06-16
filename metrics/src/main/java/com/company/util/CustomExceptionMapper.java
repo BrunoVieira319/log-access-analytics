@@ -1,6 +1,7 @@
 package com.company.util;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.StackSize;
 
 import javax.ws.rs.core.MediaType;
@@ -12,6 +13,10 @@ import javax.ws.rs.ext.Provider;
 public class CustomExceptionMapper implements ExceptionMapper<Exception> {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
+
+    public CustomExceptionMapper() {
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
+    }
 
     @Override
     public Response toResponse(Exception exception) {

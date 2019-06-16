@@ -5,7 +5,9 @@ import com.company.dto.DateQueryDto;
 import com.company.dto.LogDto;
 import com.company.dto.RegionDto;
 import com.company.util.DtoCreator;
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.StackSize;
 import org.bson.Document;
 
@@ -25,6 +27,7 @@ public class MetricsService {
 
     public MetricsService(BaseDao metricsDao) {
         this.metricsDao = metricsDao;
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     public List<LogDto> findMostAccessedUrls(int limit) {

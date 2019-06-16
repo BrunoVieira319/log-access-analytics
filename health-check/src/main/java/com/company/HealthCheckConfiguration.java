@@ -16,7 +16,7 @@ public class HealthCheckConfiguration extends Configuration {
 
     public HealthCheckConfiguration() {
         MongoClientOptions options = MongoClientOptions.builder()
-                .serverSelectionTimeout(2000)
+                .serverSelectionTimeout(10000)
                 .build();
         this.mongoClient = new MongoClient(new ServerAddress("localhost", 27017), options);
         this.httpClient = ClientBuilder.newClient();

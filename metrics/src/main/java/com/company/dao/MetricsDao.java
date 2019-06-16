@@ -1,6 +1,8 @@
 package com.company.dao;
 
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.StackSize;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -23,6 +25,7 @@ public class MetricsDao implements BaseDao {
 
     public MetricsDao(MongoClient mongoClient) {
         this.db = mongoClient.getDatabase("logs");
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     private Bson getProjectionFields() {

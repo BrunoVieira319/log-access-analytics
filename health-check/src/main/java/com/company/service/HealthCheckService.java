@@ -2,7 +2,9 @@ package com.company.service;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class HealthCheckService {
 
     public HealthCheckService(HealthCheckRegistry registry) {
         this.registry = registry;
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     public Response runHealthChecks() {

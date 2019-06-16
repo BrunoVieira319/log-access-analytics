@@ -1,7 +1,9 @@
 package com.company.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
@@ -16,6 +18,7 @@ public class ExternalServiceHealthCheck extends HealthCheck {
     public ExternalServiceHealthCheck(String url, Client client) {
         this.client = client;
         this.url = url;
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     @Override

@@ -6,13 +6,12 @@ import com.company.healthcheck.DatabaseHealthCheck;
 import com.company.healthcheck.ExternalServiceHealthCheck;
 import com.company.service.HealthCheckService;
 import com.company.util.CustomExceptionMapper;
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
 import com.google.common.flogger.LoggerConfig;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
 
 public class HealthCheckApp extends Application<HealthCheckConfiguration> {
 
@@ -20,12 +19,12 @@ public class HealthCheckApp extends Application<HealthCheckConfiguration> {
 
     public static void main(String[] args) {
         try {
+            LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
             logger.atInfo().log("Starting Health Check Service");
             new HealthCheckApp().run(args);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

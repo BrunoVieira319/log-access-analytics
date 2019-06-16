@@ -1,8 +1,10 @@
 package com.company.service;
 
 import com.company.dao.BaseDao;
+import com.company.util.LogFile;
 import com.company.util.LogsBuilder;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import org.bson.Document;
 
 import java.util.List;
@@ -15,6 +17,7 @@ public class LogIngestService {
 
     public LogIngestService(BaseDao dao) {
         this.dao = dao;
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     public void insertLogs(String logsAsString) {

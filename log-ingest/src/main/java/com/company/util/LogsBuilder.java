@@ -1,6 +1,7 @@
 package com.company.util;
 
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import com.google.common.flogger.StackSize;
 import org.bson.Document;
 
@@ -16,6 +17,7 @@ public class LogsBuilder {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     public static List<Document> build(String text) {
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
         logger.atInfo().log("Destructuring text to build log documents");
         List<Document> documents = new ArrayList<>();
 

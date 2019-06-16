@@ -1,4 +1,6 @@
 /.gradle/
+/.idea/
 /build/
 /out/
-/.idea/
+health-check-logs.xml
+health-check-logs.xml.lck

@@ -6,7 +6,9 @@ import com.company.dao.MetricsDao;
 import com.company.healthcheck.MetricsHealthCheck;
 import com.company.service.MetricsService;
 import com.company.util.CustomExceptionMapper;
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Environment;
 
@@ -15,6 +17,7 @@ public class MetricsApp extends Application<MetricsConfiguration> {
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     public static void main(String[] args) {
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
         logger.atInfo().log("Starting Metrics Service");
         try {
             new MetricsApp().run(args);

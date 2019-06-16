@@ -1,7 +1,9 @@
 package com.company.healthcheck;
 
 import com.codahale.metrics.health.HealthCheck;
+import com.company.util.LogFile;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.flogger.LoggerConfig;
 import com.mongodb.MongoClient;
 import org.bson.Document;
 
@@ -13,6 +15,7 @@ public class DatabaseHealthCheck extends HealthCheck {
 
     public DatabaseHealthCheck(MongoClient mongoClient) {
         this.mongoClient = mongoClient;
+        LoggerConfig.of(logger).addHandler(LogFile.getLogFile());
     }
 
     @Override
@@ -23,7 +26,6 @@ public class DatabaseHealthCheck extends HealthCheck {
         } catch (Exception e) {
             return Result.unhealthy("Failed to connect to localhost/127.0.0.1:27017");
         }
-        mongoClient.close();
         return Result.healthy();
     }
 }
